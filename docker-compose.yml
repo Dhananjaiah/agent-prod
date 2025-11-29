@@ -1,0 +1,67 @@
+version: "3.9"
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: insurance-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: insurance_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - insurance-network
+
+  # Backend API
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: insurance-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=local
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@postgres:5432/insurance_db
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-your-openai-api-key}
+      - HOST=0.0.0.0
+      - PORT=8000
+      - LOG_LEVEL=INFO
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - insurance-network
+    restart: unless-stopped
+
+  # Database initialization and seeding (one-time job)
+  db-seed:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: insurance-db-seed
+    command: python -m scripts.seed_db
+    environment:
+      - APP_ENV=local
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@postgres:5432/insurance_db
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - insurance-network
+
+volumes:
+  postgres_data:
+
+networks:
+  insurance-network:
+    driver: bridge
