@@ -395,12 +395,14 @@ def search_policies(query: str) -> str:
         JSON string with list of matching policies.
     """
     try:
+        from sqlalchemy import cast, String
+
         with SyncSessionLocal() as session:
             result = session.execute(
                 select(Policy)
                 .where(
                     Policy.policy_number.ilike(f"%{query}%")
-                    | Policy.policy_type.ilike(f"%{query}%")
+                    | cast(Policy.policy_type, String).ilike(f"%{query}%")
                 )
                 .limit(20)
             )
@@ -429,12 +431,14 @@ def search_claims(query: str) -> str:
         JSON string with list of matching claims.
     """
     try:
+        from sqlalchemy import cast, String
+
         with SyncSessionLocal() as session:
             result = session.execute(
                 select(Claim)
                 .where(
                     Claim.claim_number.ilike(f"%{query}%")
-                    | Claim.claim_type.ilike(f"%{query}%")
+                    | cast(Claim.claim_type, String).ilike(f"%{query}%")
                 )
                 .limit(20)
             )
