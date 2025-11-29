@@ -45,9 +45,16 @@ app = FastAPI(
 )
 
 # Add CORS middleware
+# Note: In staging/production, configure specific allowed origins via environment
+# For now, allowing all origins in development, empty in prod (configure as needed)
+cors_origins = ["*"] if settings.app_env == "local" else []
+if not settings.is_production:
+    # In staging, allow common development origins
+    cors_origins = ["*"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"] if settings.app_env == "local" else [],
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

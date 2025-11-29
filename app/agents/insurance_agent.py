@@ -144,8 +144,9 @@ def create_agent():
     tool_executor = ToolExecutor(tools)
 
     # Create the LLM with tools bound
+    # Using gpt-4-turbo as the stable production model
     llm = ChatOpenAI(
-        model="gpt-4-turbo-preview",
+        model="gpt-4-turbo",
         temperature=0,
         api_key=settings.openai_api_key,
     ).bind_tools(tools)

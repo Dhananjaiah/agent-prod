@@ -16,9 +16,11 @@ metadata:
   namespace: insurance-staging
 type: Opaque
 stringData:
-  # Replace with actual values or use external secret management
-  DATABASE_URL: "postgresql+asyncpg://user:password@postgres-staging:5432/insurance_db"
-  OPENAI_API_KEY: "your-openai-api-key-here"
+  # IMPORTANT: Replace these placeholder values before deployment!
+  # Use external secret management (AWS Secrets Manager, HashiCorp Vault, etc.)
+  # or Kubernetes external-secrets operator for production use.
+  DATABASE_URL: "REPLACE_WITH_ACTUAL_DATABASE_URL"
+  OPENAI_API_KEY: "REPLACE_WITH_ACTUAL_OPENAI_API_KEY"
 ---
 apiVersion: apps/v1
 kind: Deployment

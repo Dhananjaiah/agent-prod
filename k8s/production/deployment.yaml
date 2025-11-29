@@ -16,9 +16,12 @@ metadata:
   namespace: insurance-production
 type: Opaque
 stringData:
-  # IMPORTANT: Replace with actual values or use external secret management (e.g., AWS Secrets Manager, HashiCorp Vault)
-  DATABASE_URL: "postgresql+asyncpg://user:password@postgres-production:5432/insurance_db"
-  OPENAI_API_KEY: "your-openai-api-key-here"
+  # CRITICAL: DO NOT deploy with placeholder values!
+  # Use external secret management (AWS Secrets Manager, HashiCorp Vault, etc.)
+  # or Kubernetes external-secrets operator for production use.
+  # These placeholders will cause the application to fail if not replaced.
+  DATABASE_URL: "REPLACE_WITH_ACTUAL_DATABASE_URL"
+  OPENAI_API_KEY: "REPLACE_WITH_ACTUAL_OPENAI_API_KEY"
 ---
 apiVersion: apps/v1
 kind: Deployment
